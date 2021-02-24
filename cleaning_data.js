@@ -4,8 +4,14 @@ window.addEventListener("DOMContentLoaded", start);
 
 const allStudents = [];
 
+const settings = {
+  currentFilter: 'all',
+  currentSort: '',
+  sortDir: 'desc'
+}
+
 function start() {
-  //console.log("ready");
+  console.log("ready");
 
   loadJSON();
 }
@@ -28,8 +34,10 @@ function cleanStudentData(jsonData) {
       middleName: "",
       lastName: "",
       nickName: "Unknown",
+      gender: "",
       imageFile: "",
       house: "",
+
     };
     // Variables to store cleaned strings
     let firstName;

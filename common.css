@@ -6,9 +6,8 @@
 
 body {
     margin: 0px;
-    /* box-sizing: border-box; */
+    background-color: black;
     background-image: url(./ressources/screen_background.jpg);
-    /* background-position: center fixed; */
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -25,7 +24,6 @@ main {
 }
 
 #screen {
-    background-color: cyan;
     position: absolute;
     width: 68vw;
     height: 41vw;
@@ -38,5 +36,6 @@ main {
     position: absolute;
     width: 100%;
     z-index: 1;
+    pointer-events: none;
 }
 
