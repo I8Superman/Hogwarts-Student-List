@@ -1,0 +1,42 @@
+
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0px;
+    /* box-sizing: border-box; */
+    background-image: url(./ressources/screen_background.jpg);
+    /* background-position: center fixed; */
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+h1 {
+    margin: 0px;
+    font-size: 2vw;;
+}
+
+main {
+    width: 100vw;
+    height: calc(100vw * 0.5625);
+    position: relative;
+}
+
+#screen {
+    background-color: cyan;
+    position: absolute;
+    width: 68vw;
+    height: 41vw;
+    left: 18vw;
+    top: 9vw;
+    padding: 20px;
+}
+
+#glass_overlay {
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+}
+
