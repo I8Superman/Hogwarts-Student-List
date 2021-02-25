@@ -6,6 +6,7 @@ const qs = (s) => document.querySelector(s);
 const qsA = (s) => document.querySelectorAll(s);
 
 let studentList = [];
+let currentList = [];
 
 const settings = {
   currentFilter: "all",
@@ -42,8 +43,12 @@ function start() {
   sortButts.forEach((button) => {
     button.addEventListener("click", sortingClicked);
   });
+  // Add listener to search input field - triggers searchList functon below
+  qs('#search_field').addEventListener('input', searchList);
+
   loadJSON();
 }
+
 
 function loadJSON() {
   fetch("https://petlatkea.dk/2021/hogwarts/students.json")
@@ -57,7 +62,7 @@ function loadJSON() {
 function prepareObjects(dirtyData) {
   // -> cleanData, return array of cleaned student objects
   const cleanedData = dirtyData.map(cleanData);
-  studentList = cleanedData;
+  studentList = cleanedData; // Updates the studenList array
   displayList(studentList);
 }
 
@@ -205,11 +210,27 @@ function sortList(filteredList) {
   return sortApplied;
 }
 
+// SEARCH FUNCTION (a cool and simple one I'd say!)
+
+function searchList(event) {
+    console.log('search updated!');
+    const input = event.target.value;
+    const searchList = studentList.filter(student => {
+        if ( student.firstName.toLowerCase().includes(input.toLowerCase()) || student.lastName.toLowerCase().includes(input.toLowerCase()) || student.middleName.toLowerCase().includes(input.toLowerCase()) || student.nickName.toLowerCase().includes(input.toLowerCase()) || student.house.toLowerCase().includes(input.toLowerCase()) ) {
+            return true;  // Search for input string in student objects different keys - ad to filtered arr if true
+        } else {
+            return false;
+        }
+    });
+    displayList(searchList); // Display the filtered list directly. buildList() wouldn't work, as it filters from the full studentList again, erasing this searchList
+}
+
 // DISPLAYING THINGS
 
 function buildList() {
     const filteredList = filterList(studentList);
     const sortedList = sortList(filteredList);
+    currentList = sortedList; // Update the currently displayed array
     
     displayList(sortedList); // Send result to displayList()
 }
