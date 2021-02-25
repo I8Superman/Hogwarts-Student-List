@@ -253,8 +253,11 @@ function displayStudent(oneStudent) {
   clone.querySelector("[data-field=gender]").textContent = oneStudent.gender;
   clone.querySelector("[data-field=prefect]").textContent = oneStudent.prefect;
 
+  clone.querySelector('tr').addEventListener('click', (e) => showDetails(oneStudent));
   // append clone to list
   qs("#list tbody").appendChild(clone);
 }
 
-
+function showDetails(student) {
+    console.log('Modal coming right up!');
+}
