@@ -174,19 +174,24 @@ function sortingClicked(event) {
     console.log('A sorting was clicked!');
     const sortButt = event.target.dataset.sort; // Get data attr from event elem
     const dir = event.target.dataset.direction; 
-
-    console.log(sortButt, dir);
-    setSort(sortButt); // Pass data attr (the button clicked) to sortingSet func
+    const sortElemClicked = event.target;
+    
+    setSort(sortButt, dir, sortElemClicked); // Pass data attr (the button clicked) to sortingSet func
 }
 
-function setSort(sortButt) {
-  settings.currentSort = sortButt;
-  buildList();
+function setSort(sortButt, dir, sortElemClicked) {
+    console.log(sortButt, dir, sortElemClicked);
+    settings.currentSort = sortButt;
+    settings.sortDir = dir; // Set sort direction in settings object
+    // Set data-direction attr to the opposite of what it is now:
+    sortElemClicked.setAttribute('data-direction', (dir === 'desc' ? 'asc' : 'desc'));
+    
+    buildList();
 }
 
 function sortList(filteredList) {
   const sortType = settings.currentSort;
-  const dir = settings.sortDir;
+  const dir = settings.sortDir; // Get sort direction from settings object
   console.log(dir);
 
   const sortApplied = filteredList.sort(function (a, b) {
@@ -205,9 +210,8 @@ function sortList(filteredList) {
 function buildList() {
     const filteredList = filterList(studentList);
     const sortedList = sortList(filteredList);
-    console.log(sortedList);
-  // call filiterList and sortList
-  // Send result to displayList()
+    
+    displayList(sortedList); // Send result to displayList()
 }
 
 function displayList(allStudents) {
