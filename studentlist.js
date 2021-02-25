@@ -44,11 +44,10 @@ function start() {
     button.addEventListener("click", sortingClicked);
   });
   // Add listener to search input field - triggers searchList functon below
-  qs('#search_field').addEventListener('input', searchList);
+  qs("#search_field").addEventListener("input", searchList);
 
   loadJSON();
 }
-
 
 function loadJSON() {
   fetch("https://petlatkea.dk/2021/hogwarts/students.json")
@@ -143,14 +142,14 @@ function capitalize(string) {
 // FILTERING
 
 function filterClicked(event) {
-    console.log('A filter was clicked!');
-    const filButt = event.target.dataset.filter; // Get data attr from event elem
-    const filType = event.target.dataset.key;
-    setFilter(filButt, filType); // Pass data attr (the button clicked) to this func
+  console.log("A filter was clicked!");
+  const filButt = event.target.dataset.filter; // Get data attr from event elem
+  const filType = event.target.dataset.key;
+  setFilter(filButt, filType); // Pass data attr (the button clicked) to this func
 }
 
 function setFilter(filButt, filType) {
-    console.log(filType, filButt);
+  console.log(filType, filButt);
   settings.currentFilter = filButt; // Set current filter
   settings.currentFilterKey = filType;
   //console.log(settings);
@@ -161,8 +160,9 @@ function filterList(studentList) {
   const filter = settings.currentFilter;
   const filterKey = settings.currentFilterKey;
   // Filter the array BUT use arrow function to also pass filter name to applyFilter function
-  const filApplied = studentList.filter(student => {
-    if (filter === "all") { // If 'all', return all objects
+  const filApplied = studentList.filter((student) => {
+    if (filter === "all") {
+      // If 'all', return all objects
       return true;
     } else if (student[filterKey] === filter || student[filterKey] === true) {
       return true; // Return object with keys of the filtered value
@@ -176,22 +176,25 @@ function filterList(studentList) {
 // SORTING
 
 function sortingClicked(event) {
-    console.log('A sorting was clicked!');
-    const sortButt = event.target.dataset.sort; // Get data attr from event elem
-    const dir = event.target.dataset.direction; 
-    const sortElemClicked = event.target;
-    
-    setSort(sortButt, dir, sortElemClicked); // Pass data attr (the button clicked) to sortingSet func
+  console.log("A sorting was clicked!");
+  const sortButt = event.target.dataset.sort; // Get data attr from event elem
+  const dir = event.target.dataset.direction;
+  const sortElemClicked = event.target;
+
+  setSort(sortButt, dir, sortElemClicked); // Pass data attr (the button clicked) to sortingSet func
 }
 
 function setSort(sortButt, dir, sortElemClicked) {
-    console.log(sortButt, dir, sortElemClicked);
-    settings.currentSort = sortButt;
-    settings.sortDir = dir; // Set sort direction in settings object
-    // Set data-direction attr to the opposite of what it is now:
-    sortElemClicked.setAttribute('data-direction', (dir === 'desc' ? 'asc' : 'desc'));
-    
-    buildList();
+  console.log(sortButt, dir, sortElemClicked);
+  settings.currentSort = sortButt;
+  settings.sortDir = dir; // Set sort direction in settings object
+  // Set data-direction attr to the opposite of what it is now:
+  sortElemClicked.setAttribute(
+    "data-direction",
+    dir === "desc" ? "asc" : "desc"
+  );
+
+  buildList();
 }
 
 function sortList(filteredList) {
@@ -202,9 +205,9 @@ function sortList(filteredList) {
   const sortApplied = filteredList.sort(function (a, b) {
     if (a[sortType] < b[sortType]) {
       // The square brackets tells JS that I'm calling a variable, not a property!
-      return (dir === 'desc' ? -1 : 1);
+      return dir === "desc" ? -1 : 1;
     } else {
-      return (dir === 'desc' ? 1 : -1);
+      return dir === "desc" ? 1 : -1;
     }
   });
   return sortApplied;
@@ -213,26 +216,32 @@ function sortList(filteredList) {
 // SEARCH FUNCTION (a cool and simple one I'd say!)
 
 function searchList(event) {
-    console.log('search updated!');
-    const input = event.target.value;
-    const searchList = studentList.filter(student => {
-        if ( student.firstName.toLowerCase().includes(input.toLowerCase()) || student.lastName.toLowerCase().includes(input.toLowerCase()) || student.middleName.toLowerCase().includes(input.toLowerCase()) || student.nickName.toLowerCase().includes(input.toLowerCase()) || student.house.toLowerCase().includes(input.toLowerCase()) ) {
-            return true;  // Search for input string in student objects different keys - ad to filtered arr if true
-        } else {
-            return false;
-        }
-    });
-    displayList(searchList); // Display the filtered list directly. buildList() wouldn't work, as it filters from the full studentList again, erasing this searchList
+  console.log("search updated!");
+  const input = event.target.value;
+  const searchList = studentList.filter((student) => {
+    if (
+      student.firstName.toLowerCase().includes(input.toLowerCase()) ||
+      student.lastName.toLowerCase().includes(input.toLowerCase()) ||
+      student.middleName.toLowerCase().includes(input.toLowerCase()) ||
+      student.nickName.toLowerCase().includes(input.toLowerCase()) ||
+      student.house.toLowerCase().includes(input.toLowerCase())
+    ) {
+      return true; // Search for input string in student objects different keys - ad to filtered arr if true
+    } else {
+      return false;
+    }
+  });
+  displayList(searchList); // Display the filtered list directly. buildList() wouldn't work, as it filters from the full studentList again, erasing this searchList
 }
 
 // DISPLAYING THINGS
 
 function buildList() {
-    const filteredList = filterList(studentList);
-    const sortedList = sortList(filteredList);
-    currentList = sortedList; // Update the currently displayed array
-    
-    displayList(sortedList); // Send result to displayList()
+  const filteredList = filterList(studentList);
+  const sortedList = sortList(filteredList);
+  currentList = sortedList; // Update the currently displayed array
+
+  displayList(sortedList); // Send result to displayList()
 }
 
 function displayList(allStudents) {
@@ -245,19 +254,50 @@ function displayStudent(oneStudent) {
   // Clone the student template, populate it with a studen object and append to the list
   const clone = qs("#student").content.cloneNode(true);
   // set clone data
-  clone.querySelector("[data-field=firstName]").textContent = oneStudent.firstName;
-  clone.querySelector("[data-field=middleName]").textContent = oneStudent.middleName;
-  clone.querySelector("[data-field=lastName]").textContent = oneStudent.lastName;
-  clone.querySelector("[data-field=nickName]").textContent = oneStudent.nickName;
+  clone.querySelector("[data-field=firstName]").textContent =
+    oneStudent.firstName;
+  clone.querySelector("[data-field=middleName]").textContent =
+    oneStudent.middleName;
+  clone.querySelector("[data-field=lastName]").textContent =
+    oneStudent.lastName;
+  clone.querySelector("[data-field=nickName]").textContent =
+    oneStudent.nickName;
   clone.querySelector("[data-field=house]").textContent = oneStudent.house;
   clone.querySelector("[data-field=gender]").textContent = oneStudent.gender;
   clone.querySelector("[data-field=prefect]").textContent = oneStudent.prefect;
 
-  clone.querySelector('tr').addEventListener('click', (e) => showDetails(oneStudent));
+  clone
+    .querySelector("tr")
+    .addEventListener("click", (e) => showDetails(oneStudent));
   // append clone to list
   qs("#list tbody").appendChild(clone);
 }
 
 function showDetails(student) {
-    console.log('Modal coming right up!');
+  console.log(student);
+
+  const template = qs("template.modal").content;
+  const myModal = template.cloneNode(true);
+
+  const modalBox = myModal.querySelector(".modal_box");
+  const content = myModal.querySelector(".modal_content");
+  const shield = myModal.querySelector(".house_shield");
+  const editButton = myModal.querySelector(".edit_info");
+  const image = myModal.querySelector(".modal_header img");
+  const dataArea = myModal.querySelector(".modal_data");
+  const extraInfo = myModal.querySelector(".optional_info");
+
+  modalBox.classList.remove("hide"); // Remove hide class and display modal box
+
+  // Get image URL -> createImgUrl
+  // Get shield image
+  // Get names, gender etc.
+  // Display img, data and shield
+
+  // Add click event to button -> editStudent() (edit prefect, team (standard or captain), inquisitor, EXPELL)
+  myModal.querySelector(".modal_box").addEventListener("click", () => {
+    document.querySelector(".modal_box").remove(); // Click outside modal_content to remove modal from DOM again
+  });
+
+  qs("#screen").appendChild(myModal);
 }
