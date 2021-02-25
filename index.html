@@ -12,24 +12,34 @@
     <main>
       <div id="screen">
         <h1>Hogwarts student data</h1>
-
+        <div id="filters">
+          <button class="filter" data-action="filter" data-key="house" data-filter="Gryffindor">Gryffindor</button>
+          <button class="filter" data-action="filter" data-key="house" data-filter="Slytherin">Slytherin</button>
+          <button class="filter" data-action="filter" data-key="house" data-filter="Hufflepuff">Hufflepuff</button>
+          <button class="filter" data-action="filter" data-key="house" data-filter="Ravenclaw">Ravenclaw</button>
+          <button class="filter" data-action="filter" data-key="gender" data-filter="boy">Male</button>
+          <button class="filter" data-action="filter" data-key="gender" data-filter="girl">Female</button>
+          <button class="filter" data-action="filter" data-key="prefect" data-filter="prefect">Prefects</button>
+          <button class="filter" data-action="filter" data-key="quidditch" data-filter="quidditch">Quidditch</button>
+          <button class="filter" data-action="filter" data-key="blood" data-filter="blood">Blood type</button>
+          <button class="filter" data-action="filter" data-filter="all">Show all</button>
+        </div>
         <table id="list">
-          <thead>
+          <thead> 
             <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Description</th>
-              <th>Age</th>
-            </tr>
-            <tr>
-              <td data-field="name">NAME</td>
-              <td data-field="type">TYPE</td>
-              <td data-field="desc">DESCRIPTION</td>
-              <td data-field="age">AGE</td>
+              <th data-action="sort" data-direction="asc" data-sort="firstName">Firstname</th>
+              <th data-action="sort" data-direction="asc" data-sort="middleName">Middlename</th>
+              <th data-action="sort" data-direction="asc" data-sort="lastName">Lastname</th>
+              <th data-action="sort" data-direction="asc" data-sort="nickName">Nickname</th>
+              <th data-action="sort" data-direction="asc" data-sort="gender">Gender</th>
+              <th data-action="sort" data-direction="asc" data-sort="house">House</th>
+              <th data-action="sort" data-direction="asc" data-sort="prefect">Prefect</th>
+              <th data-action="sort" data-direction="asc" data-sort="quidditch">Quidditch</th>
+              <th data-action="sort" data-direction="asc" data-sort="blood">Expelled</th>
             </tr>
           </thead>
           <tbody>
-            <!-- animal template will be copied and inserted here -->
+            <!-- student template clones inserted here -->
           </tbody>
         </table>
       </div>
@@ -37,10 +47,13 @@
 
     <template id="student">
       <tr>
-        <td data-field="name">NAME</td>
-        <td data-field="type">TYPE</td>
-        <td data-field="desc">DESCRIPTION</td>
-        <td data-field="age">AGE</td>
+        <td data-field="firstName">first</td>
+        <td data-field="middleName">middle</td>
+        <td data-field="lastName">last</td>
+        <td data-field="nickName">nick</td>
+        <td data-field="gender">gender</td>
+        <td data-field="house">house</td>
+        <td data-field="prefect">no</td>
       </tr>
     </template>
 

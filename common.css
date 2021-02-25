@@ -39,3 +39,6 @@ main {
     pointer-events: none;
 }
 
+[data-action] {
+  cursor: pointer;
+}
