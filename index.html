@@ -8,57 +8,132 @@
     <title>Hogwarts Student list</title>
   </head>
   <body>
-    <img src="ressources/screen_overlay.png" id="glass_overlay">
+    <img src="ressources/screen_overlay.png" id="glass_overlay" />
     <main>
       <div id="screen">
         <template class="modal">
-        <div class="modal_box">
-          <div class="modal_content">
-            <div class="house_shield">Shield here</div>
-            <button class="edit_info">Edit student</button>
-            <div class="modal_header">
-              <img src="./student_img/abbott_h.png" alt="">
-              <div class="emblems">Emblems here</div>
-            </div>
-            <div class="modal_data">
-              <h3>Heres is a name in print</h3>
-              <h3>Heres is a name in print</h3>
-              <h3>Heres is a name in print</h3>
-              <h3>Heres is a name in print</h3>
-              <h3>Heres is a name in print</h3>
-            </div>
-            <div class="optional_info">
-              <div class="some_info">Here is som optional info</div>
+          <div class="modal_box">
+            <div class="modal_content">
+              <div class="house_shield">Shield here</div>
+              <button class="edit_info">Edit student</button>
+              <div class="modal_header">
+                <img src="./student_img/abbott_h.png" alt="" />
+                <div class="emblems">Emblems here</div>
+              </div>
+              <div class="modal_data">
+                <!-- Append names, titles, statuses etc. here -->
+              </div>
             </div>
           </div>
-        </div>
         </template>
+
         <h1>Hogwarts student data</h1>
         <div id="filters">
-          <button class="filter" data-action="filter" data-key="house" data-filter="Gryffindor">Gryffindor</button>
-          <button class="filter" data-action="filter" data-key="house" data-filter="Slytherin">Slytherin</button>
-          <button class="filter" data-action="filter" data-key="house" data-filter="Hufflepuff">Hufflepuff</button>
-          <button class="filter" data-action="filter" data-key="house" data-filter="Ravenclaw">Ravenclaw</button>
-          <button class="filter" data-action="filter" data-key="gender" data-filter="boy">Male</button>
-          <button class="filter" data-action="filter" data-key="gender" data-filter="girl">Female</button>
-          <button class="filter" data-action="filter" data-key="prefect" data-filter="prefect">Prefects</button>
-          <button class="filter" data-action="filter" data-key="quidditch" data-filter="quidditch">Quidditch</button>
-          <button class="filter" data-action="filter" data-key="blood" data-filter="blood">Blood type</button>
-          <button class="filter" data-action="filter" data-filter="all">Show all</button>
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="house"
+            data-filter="Gryffindor"
+            >Gryffindor</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="house"
+            data-filter="Slytherin"
+            >Slytherin</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="house"
+            data-filter="Hufflepuff"
+            >Hufflepuff</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="house"
+            data-filter="Ravenclaw"
+            >Ravenclaw</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="gender"
+            data-filter="boy"
+            >Male</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="gender"
+            data-filter="girl"
+            >Female</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="prefect"
+            data-filter="prefect"
+            >Prefects</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="quidditch"
+            data-filter="quidditch"
+            >Quidditch</button
+          >
+          <button
+            class="filter"
+            data-action="filter"
+            data-key="blood"
+            data-filter="blood"
+            >Blood type</button
+          >
+          <button class="filter" data-action="filter" data-filter="all"
+            >Show all</button
+          >
         </div>
-        <input id="search_field" type="search" placeholder="Search by name..." />
+        <input
+          id="search_field"
+          type="search"
+          placeholder="Search by name..."
+        />
         <table id="list">
-          <thead> 
+          <thead>
             <tr>
-              <th data-action="sort" data-direction="desc" data-sort="firstName">Firstname</th>
-              <th data-action="sort" data-direction="desc" data-sort="middleName">Middlename</th>
-              <th data-action="sort" data-direction="desc" data-sort="lastName">Lastname</th>
-              <th data-action="sort" data-direction="desc" data-sort="nickName">Nickname</th>
-              <th data-action="sort" data-direction="desc" data-sort="gender">Gender</th>
-              <th data-action="sort" data-direction="desc" data-sort="house">House</th>
-              <th data-action="sort" data-direction="desc" data-sort="prefect">Prefect</th>
-              <th data-action="sort" data-direction="desc" data-sort="quidditch">Quidditch</th>
-              <th data-action="sort" data-direction="desc" data-sort="blood">Expelled</th>
+              <th data-action="sort" data-direction="desc" data-sort="firstName"
+                >Firstname</th
+              >
+              <th
+                data-action="sort"
+                data-direction="desc"
+                data-sort="middleName"
+                >Middlename</th
+              >
+              <th data-action="sort" data-direction="desc" data-sort="lastName"
+                >Lastname</th
+              >
+              <th data-action="sort" data-direction="desc" data-sort="nickName"
+                >Nickname</th
+              >
+              <th data-action="sort" data-direction="desc" data-sort="gender"
+                >Gender</th
+              >
+              <th data-action="sort" data-direction="desc" data-sort="house"
+                >House</th
+              >
+              <th data-action="sort" data-direction="desc" data-sort="prefect"
+                >Prefect</th
+              >
+              <th data-action="sort" data-direction="desc" data-sort="blood"
+                >Blood type</th
+              >
+              <th data-action="sort" data-direction="desc" data-sort="quidditch"
+                >Quidditch</th
+              >
             </tr>
           </thead>
           <tbody>
@@ -77,6 +152,7 @@
         <td data-field="gender">gender</td>
         <td data-field="house">house</td>
         <td data-field="prefect">no</td>
+        <td data-field="blood">no</td>
       </tr>
     </template>
 
