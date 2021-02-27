@@ -8,6 +8,8 @@ const qsA = (s) => document.querySelectorAll(s);
 let studentList = [];
 let currentList = [];
 
+let bloodTypeData;
+
 const settings = {
   currentFilter: "all",
   currentFilterKey: "house",
@@ -50,23 +52,64 @@ function start() {
   loadJSON();
 }
 
-function loadJSON() {
-  fetch("https://petlatkea.dk/2021/hogwarts/students.json")
-    .then((response) => response.json())
-    .then((dirtyData) => {
-      // when loaded, prepare objects
-      prepareObjects(dirtyData);
-    });
+// Old fetch function:
+
+// function loadJSON() {
+//   fetch("https://petlatkea.dk/2021/hogwarts/students.json")
+//     .then((response) => response.json())
+//     .then((dirtyData) => {
+//       // when loaded, prepare objects
+//       prepareObjects(dirtyData);
+//     });
+// }
+
+async function loadJSON() {
+  // Trying this async stuff. Still not sure exactly how it works
+  const response = await fetch(
+    "https://petlatkea.dk/2021/hogwarts/students.json"
+  );
+  const dirtyData = await response.json();
+
+  const responseBlood = await fetch(
+    // Fetching the blood status data
+    "https://petlatkea.dk/2021/hogwarts/families.json"
+  );
+  const bloodData = await responseBlood.json();
+  prepareBloodData(bloodData);
+  prepareObjects(dirtyData);
+}
+
+function prepareBloodData(bloodData) {
+  bloodTypeData = bloodData; // Put data in global variable to be accessed later
 }
 
 function prepareObjects(dirtyData) {
   // -> cleanData, return array of cleaned student objects
   const cleanedData = dirtyData.map(cleanData);
-  studentList = cleanedData; // Updates the studenList array
+  const bloodTypesAdded = cleanedData.map(getBloodType); // Add blood type here, AFTER student JSON data has been handled
+  studentList = bloodTypesAdded; // Updates the studenList array
+  currentList = bloodTypesAdded; // Also set currentList (so search works on the initial list)
   displayList(studentList);
 }
 
-// CLEANING THE DATA
+function getBloodType(student) {
+  const data = bloodTypeData; // Shorthand var for blood array data
+  // Check if match between lastName and blood type data json:
+  if ( data.half.includes(student.lastName) && data.pure.includes(student.lastName) ) {
+    student.blood = 'half/pure';
+  } else if (student.lastName === '') {
+    student.blood = 'unknown';
+  } else if (data.half.includes(student.lastName)) {
+    student.blood = "half";
+  } else if (data.pure.includes(student.lastName)) {
+    student.blood = "pure";
+  } else {
+    student.blood = "muggle";
+  }
+  return student; // Puts the modified object back in the new array
+}
+
+// CLEANING THE DATA & BUILDING NEW ARRAY FROM DATA :
 
 // Clean each student obj
 function cleanData(dirtyObject, index) {
@@ -78,12 +121,9 @@ function cleanData(dirtyObject, index) {
   // GENDER
   const studentGender = dirtyObject.gender;
 
-  // QUIDDITCH, PREFECTS, INQUISITORS, EXPELLED
-  // Send to individual functions who set these parameters
-
-  // Copy the student object and populate it with cleaned data
   const oneStudent = Object.create(StudentObj); // 'Clone' the object
 
+  // 'Populate' the new object with the cleaned data
   oneStudent.id = index; // Add ID to object for quick calling
   oneStudent.firstName = cleanedNames.firstName; // 'Populate' the object
   oneStudent.middleName = cleanedNames.middleName;
@@ -94,6 +134,8 @@ function cleanData(dirtyObject, index) {
 
   return oneStudent;
 }
+
+// Functions for cleaning and getting data for each student object:
 
 function cleanFullname(fullName) {
   const trimFullName = fullName.trim(); // Remove spaces before and after fullname
@@ -125,11 +167,9 @@ function cleanFullname(fullName) {
     lastName = "";
   }
   if (lastName.includes("-")) {
-    lastName = lastName.split("-");
-    lastName[1] =
-      lastName[1].charAt(0).toUpperCase() +
-      lastName[1].substring(1).toLowerCase();
-    lastName = lastName.join("-");
+    const lastNames = lastName.split("-");
+    lastNames[1] = capitalize(lastNames[1]);
+    lastName = lastNames.join("-");
   }
   return { firstName, middleName, lastName, nickName };
 }
@@ -255,10 +295,14 @@ function displayStudent(oneStudent) {
   // Clone the student template, populate it with a studen object and append to the list
   const clone = qs("#student").content.cloneNode(true);
   // set clone data
-  clone.querySelector("[data-field=firstName]").textContent = oneStudent.firstName;
-  clone.querySelector("[data-field=middleName]").textContent = oneStudent.middleName;
-  clone.querySelector("[data-field=lastName]").textContent = oneStudent.lastName;
-  clone.querySelector("[data-field=nickName]").textContent = oneStudent.nickName;
+  clone.querySelector("[data-field=firstName]").textContent =
+    oneStudent.firstName;
+  clone.querySelector("[data-field=middleName]").textContent =
+    oneStudent.middleName;
+  clone.querySelector("[data-field=lastName]").textContent =
+    oneStudent.lastName;
+  clone.querySelector("[data-field=nickName]").textContent =
+    oneStudent.nickName;
   clone.querySelector("[data-field=house]").textContent = oneStudent.house;
   clone.querySelector("[data-field=gender]").textContent = oneStudent.gender;
   clone.querySelector("[data-field=prefect]").textContent = oneStudent.prefect;
@@ -266,16 +310,16 @@ function displayStudent(oneStudent) {
   const bloodSymbol = getBloodSymbol(oneStudent.blood); // Get blood type symbol
   // if (oneStudent.blood === 'half') {
   //   bloodSymbol = '\u25D2';
-  // } 
+  // }
   // if (oneStudent.blood === 'full') {
   //   bloodSymbol = '\u2B24';
   // } // Display blood sybol in list:
   clone.querySelector("[data-field=blood]").textContent = bloodSymbol;
-  
+
   clone // Add event to call shwDetails
     .querySelector("tr")
     .addEventListener("click", (e) => showDetails(oneStudent));
-  
+
   qs("#list tbody").appendChild(clone); // append clone to list
 }
 
@@ -292,61 +336,74 @@ function showDetails(student) {
   const image = myModal.querySelector(".modal_header img");
   const dataArea = myModal.querySelector(".modal_data");
 
-
   // Get image URL -> createImgUrl
-  if (student.lastName && student.firstName) { // Both names mus be available to create img URL
-    const imgUrl = `./student_img/${student.lastName.toLowerCase()}_${student.firstName.substring(0, 1).toLowerCase()}.png`;
-    image.setAttribute('src', imgUrl); 
-  } else { // If one of the names are not available, default to this URL
-    image.setAttribute('src', './student_img/no_img.png');
+  if (student.lastName && student.firstName) {
+    // Both names mus be available to create img URL
+    let tempLastName = student.lastName;
+    if (student.lastName.includes("-")) {
+      // Get name part after hyphen in lastName
+      tempLastName = student.lastName.slice(student.lastName.indexOf("-") + 1);
+    } // Create the img URL string:
+    const imgUrl = `./student_img/${tempLastName.toLowerCase()}_${student.firstName
+      .substring(0, 1)
+      .toLowerCase()}.png`;
+    image.setAttribute("src", imgUrl);
+  } else {
+    // If one of the names are not available, default to this URL
+    image.setAttribute("src", "./student_img/no_img.png");
   }
 
   // Get shield image
   // Get names, gender etc.
   // Populate template with img, data and shield
 
-  if (student.firstName) { // Add the names IF they exist
-    const firstName = document.createElement('h4'); 
+  if (student.firstName) {
+    // Add the names IF they exist
+    const firstName = document.createElement("h4");
     firstName.innerHTML = `First name: ${student.firstName.bold()}`;
     myModal.querySelector(".modal_data").appendChild(firstName);
   }
   if (student.middleName) {
-    const middleName = document.createElement('h4');
+    const middleName = document.createElement("h4");
     middleName.innerHTML = `Middle name: ${student.middleName.bold()}`;
     myModal.querySelector(".modal_data").appendChild(middleName);
   }
   if (student.lastName) {
-    const lastName = document.createElement('h4');
+    const lastName = document.createElement("h4");
     lastName.innerHTML = `Last name: ${student.lastName.bold()}`;
     myModal.querySelector(".modal_data").appendChild(lastName);
   }
   if (student.nickName) {
-    const nickName = document.createElement('h4');
+    const nickName = document.createElement("h4");
     nickName.innerHTML = `Nickname: "${student.nickName.bold()}"`;
     myModal.querySelector(".modal_data").appendChild(nickName);
   }
-  
+
   const bloodSymbol = getBloodSymbol(student.blood); // Get blood type symbol
-  const bloodType = document.createElement('h4'); // Display blood type
-  bloodType.innerHTML = `Blood type: ${capitalize(student.blood).bold()} ${bloodSymbol}`;
+  const bloodType = document.createElement("h4"); // Display blood type
+  bloodType.innerHTML = `Blood type: ${capitalize(
+    student.blood
+  ).bold()} ${bloodSymbol}`;
   myModal.querySelector(".modal_data").appendChild(bloodType);
 
   // Add click event to button -> editStudent() (edit prefect, team (standard or captain), inquisitor, EXPELL)
-  
-  
+
   myModal.querySelector(".modal_box").addEventListener("click", () => {
-    document.querySelector(".modal_box").remove(); // Click outside modal_content to remove modal from DOM 
+    document.querySelector(".modal_box").remove(); // Click outside modal_content to remove modal from DOM
   });
 
   qs("#screen").appendChild(myModal);
 }
 
+// Sub functions related to the modal :
+
 function getBloodSymbol(bloodType) {
-  if (bloodType === 'half') {
-    return '\u25D2';
-  } else if (bloodType === 'full') {
-    return '\u2B24';
+  // Get unicode symbol to go with blood str!
+  if (bloodType === "half") {
+    return "\u25D2";
+  } else if (bloodType === "full") {
+    return "\u2B24";
   } else {
-    return '\u25EF';
+    return "\u25EF";
   }
 }
