@@ -33,7 +33,7 @@ main {
   padding: 20px;
 }
 
-.removeAorB {
+.popup_removeAorB {
   position: absolute;
   background-color: cornflowerblue;
   width: 30%;
@@ -44,6 +44,16 @@ main {
   top: 30%;
 }
 
+.popup_removeOther {
+  position: absolute;
+  background-color: lightseagreen;
+  width: 30%;
+  max-height: 80%;
+  max-width: 300px;
+  padding: 20px;
+  left: 35%;
+  top: 30%;
+}
 
 #glass_overlay {
   position: absolute;

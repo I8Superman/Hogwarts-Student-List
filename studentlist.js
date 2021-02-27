@@ -86,10 +86,13 @@ function prepareObjects(dirtyData) {
 function getBloodType(student) {
   const data = bloodTypeData; // Shorthand var for blood array data
   // Check if match between lastName and blood type data json:
-  if ( data.half.includes(student.lastName) && data.pure.includes(student.lastName) ) {
-    student.blood = 'half/pure';
-  } else if (student.lastName === '') {
-    student.blood = 'unknown';
+  if (
+    data.half.includes(student.lastName) &&
+    data.pure.includes(student.lastName)
+  ) {
+    student.blood = "half/pure";
+  } else if (student.lastName === "") {
+    student.blood = "unknown";
   } else if (data.half.includes(student.lastName)) {
     student.blood = "half";
   } else if (data.pure.includes(student.lastName)) {
@@ -251,7 +254,8 @@ function sortList(filteredList) {
 function searchList(event) {
   const input = event.target.value;
   const searchList = currentList.filter((student) => {
-    if ( // Look through every key value of every student obj for input match
+    if (
+      // Look through every key value of every student obj for input match
       student.firstName.toLowerCase().includes(input.toLowerCase()) ||
       student.lastName.toLowerCase().includes(input.toLowerCase()) ||
       student.middleName.toLowerCase().includes(input.toLowerCase()) ||
@@ -377,7 +381,9 @@ function showDetails(student) {
 
   const bloodSymbol = getBloodSymbol(student.blood); // Get blood type symbol
   const bloodType = document.createElement("h4"); // Display blood type
-  bloodType.innerHTML = `Blood type: ${capitalize(student.blood).bold()} ${bloodSymbol}`;
+  bloodType.innerHTML = `Blood type: ${capitalize(
+    student.blood
+  ).bold()} ${bloodSymbol}`;
   myModal.querySelector(".modal_data").appendChild(bloodType);
 
   // Add click event to button -> editStudent() (edit prefect, team (standard or captain), inquisitor, EXPELL)
@@ -391,7 +397,7 @@ function showDetails(student) {
 
 // Sub functions related to the modal :
 
-// Get blood type symbol to display 
+// Get blood type symbol to display
 function getBloodSymbol(bloodType) {
   // Get unicode symbol to go with blood str!
   if (bloodType === "half") {
@@ -399,14 +405,13 @@ function getBloodSymbol(bloodType) {
   } else if (bloodType === "pure") {
     return "p";
   } else if (bloodType === "half/pure") {
-    return "h/p"
+    return "h/p";
   } else if (bloodType === "unknown") {
-    return "?"
+    return "?";
   } else {
     return "m";
   }
 }
-
 
 function makePrefect(student) {
   if (student.prefect === true) {
@@ -416,35 +421,93 @@ function makePrefect(student) {
   }
 }
 
-
 function tryToMakePrefect(selectedStudent) {
   // Get all prefects in Hogwarts
-  const allPrefects = studentList.filter(student => student.prefect === true);
+  const allPrefects = studentList.filter((student) => student.prefect === true);
   // Get prefects from same house as selectedStudent
-  const fromThisHouse = allPrefects.filter(student => student.house === selectedStudent.house); 
+  const fromThisHouse = allPrefects.filter(
+    (student) => student.house === selectedStudent.house
+  );
   // Look for existing prefects from this house of the same sex. Use .shift() to return the first elem found (doesn't matter how many found)
-  const ofSameGender = fromThisHouse.filter(student => student.gender === selectedStudent.gender).shift();
-  const nrPrefInHouse = fromThisHouse.length + 1; // Counting prefects of this house
+  const ofSameGender = fromThisHouse
+    .filter((student) => student.gender === selectedStudent.gender)
+    .shift();
+  const nrPrefInHouse = fromThisHouse.length + 1; // Counting prefects in this house
 
-  // If theres already a prefect of this gender
-  if ( ofSameGender ) {
-    console.log(`Only one ${selectedStudent.gender} can be made prefect!`);
-    // removeOtherPefect(ofSameGender)
-  } else if ( nrPrefInHouse > 2 ) {// If theres already 2 prefects from this house
+  if (nrPrefInHouse > 2) { // If theres already 2 prefects from this house
     console.log(`A maximum of 2 students from each house can be made prefects!`);
-    // removeAorB(fromThisHouse[0], fromThisHouse[1])
-    console.log(fromThisHouse[0], fromThisHouse[1]);
-  } else {
-    prefectMake(selectedStudent);
+    removeAorB(fromThisHouse[0], fromThisHouse[1]);
+  } else if (ofSameGender) { // If theres already a prefect of this gender
+    console.log(`Only one ${selectedStudent.gender} can be made prefect!`);
+    removeOtherStudent(ofSameGender);
+  } else { // removeOtherPefect(ofSameGender)
+    makePrefect(selectedStudent);
   }
-  
-  function prefectMake (student) {
+
+  // Show popup with remove and cancel button
+  function removeOtherStudent(student) {
+    const popup = qs(".popup_removeOther");
+    popup.classList.remove("hide");
+    qs(".popup_removeOther .alert").textContent += ` ${student.gender} from each house`;
+    qs(".popup_removeOther .cancel").addEventListener("click", closePopup);
+    qs(".remove_other").addEventListener("click", clickRemoveOther);
+    // Show names on button
+    qs(".remove_other").textContent = `Remove ${student.firstName} ${student.lastName}`;
+    // Close popup if cancel button clicked
+    function closePopup() {
+      popup.classList.add("hide");
+      qs(".popup_removeOther .cancel").removeEventListener("click", closePopup);
+      qs(".remove_a").removeEventListener("click", clickRemoveOther);
+    }
+
+    function clickRemoveOther() {
+      removePrefect(student);
+      makePrefect(selectedStudent);
+      buildList();
+      closePopup();
+    }
+  }
+
+  // Show popup with remove A or B and cancel buttons
+  function removeAorB(studA, studB) {
+    const popup = qs(".popup_removeAorB");
+    popup.classList.remove("hide");
+    qs(".popup_removeAorB .cancel").addEventListener("click", closePopup);
+    qs(".remove_a").addEventListener("click", clickRemoveA);
+    qs(".remove_b").addEventListener("click", clickRemoveB);
+    // Show names on buttons
+    qs(".remove_a").textContent = `Remove ${studA.firstName} ${studA.lastName}`;
+    qs(".remove_b").textContent = `Remove ${studB.firstName} ${studB.lastName}`;
+    // Close popup if cancel button clicked
+    function closePopup() {
+      popup.classList.add("hide");
+      qs(".popup_removeAorB .cancel").removeEventListener("click", closePopup);
+      qs(".remove_a").removeEventListener("click", clickRemoveA);
+      qs(".remove_b").removeEventListener("click", clickRemoveB);
+    }
+
+    function clickRemoveA() {
+      removePrefect(studA);
+      makePrefect(selectedStudent);
+      buildList();
+      closePopup();
+    }
+
+    function clickRemoveB() {
+      removePrefect(studB);
+      makePrefect(selectedStudent);
+      buildList();
+      closePopup();
+    }
+  }
+  // Generic make prefect function
+  function makePrefect(student) {
     student.prefect = true;
-  } 
+  }
+  // Generic remove prefect function
+  function removePrefect(student) {
+    student.prefect = false;
+  }
 
   buildList();
 }
-
-
-
-

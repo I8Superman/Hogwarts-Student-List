@@ -28,12 +28,18 @@
           </div>
         </template>
 
-       <div class="removeAorB">
-        <div class="alert">You can only select 2 prefects from each house!</div>
-        <button class="action1">Remove student A</button>
-        <button class="action2">Remove student B</button>
-        <button class="action2">Cancel remove</button>
-      </div>
+        <div class="popup_removeAorB hide">
+          <div class="alert">You can only appoint 2 prefects from each house!</div>
+          <button class="remove_a">Remove</button>
+          <button class="remove_b">Remove</button>
+          <button class="cancel">Cancel</button>
+        </div>
+
+        <div class="popup_removeOther hide">
+          <div class="alert">You can only appoint one</div>
+          <button class="remove_other">Remove</button>
+          <button class="cancel">Cancel</button>
+        </div>
 
         <h1>Hogwarts student data</h1>
         <div id="filters">
