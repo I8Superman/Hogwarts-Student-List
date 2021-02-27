@@ -234,8 +234,7 @@ function setSort(sortButt, dir, sortElemClicked) {
 function sortList(filteredList) {
   const sortType = settings.currentSort;
   const dir = settings.sortDir; // Get sort direction from settings object
-  console.log(dir);
-
+  // console.log(dir);
   const sortApplied = filteredList.sort(function (a, b) {
     if (a[sortType] < b[sortType]) {
       // The square brackets tells JS that I'm calling a variable, not a property!
@@ -309,9 +308,13 @@ function displayStudent(oneStudent) {
   // } // Display blood sybol in list:
   clone.querySelector("[data-field=blood]").textContent = bloodSymbol;
 
-  clone // Add event to call shwDetails
+  // clone // Add event to call shwDetails
+  //   .querySelector("tr")
+  //   .addEventListener("click", (e) => showDetails(oneStudent));
+
+  clone // Temporary prefect clickability!!
     .querySelector("tr")
-    .addEventListener("click", (e) => showDetails(oneStudent));
+    .addEventListener("click", (e) => makePrefect(oneStudent));
 
   qs("#list tbody").appendChild(clone); // append clone to list
 }
@@ -403,3 +406,45 @@ function getBloodSymbol(bloodType) {
     return "m";
   }
 }
+
+
+function makePrefect(student) {
+  if (student.prefect === true) {
+    student.prefect = false;
+  } else {
+    tryToMakePrefect(student);
+  }
+}
+
+
+function tryToMakePrefect(selectedStudent) {
+  // Get all prefects in Hogwarts
+  const allPrefects = studentList.filter(student => student.prefect === true);
+  // Get prefects from same house as selectedStudent
+  const fromThisHouse = allPrefects.filter(student => student.house === selectedStudent.house); 
+  // Look for existing prefects from this house of the same sex. Use .shift() to return the first elem found (doesn't matter how many found)
+  const ofSameGender = fromThisHouse.filter(student => student.gender === selectedStudent.gender).shift();
+  const nrPrefInHouse = fromThisHouse.length + 1; // Counting prefects of this house
+
+  // If theres already a prefect of this gender
+  if ( ofSameGender ) {
+    console.log(`Only one ${selectedStudent.gender} can be made prefect!`);
+    // removeOtherPefect(ofSameGender)
+  } else if ( nrPrefInHouse > 2 ) {// If theres already 2 prefects from this house
+    console.log(`A maximum of 2 students from each house can be made prefects!`);
+    // removeAorB(fromThisHouse[0], fromThisHouse[1])
+    console.log(fromThisHouse[0], fromThisHouse[1]);
+  } else {
+    prefectMake(selectedStudent);
+  }
+  
+  function prefectMake (student) {
+    student.prefect = true;
+  } 
+
+  buildList();
+}
+
+
+
+

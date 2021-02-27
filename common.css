@@ -25,13 +25,25 @@ main {
 }
 
 #screen {
-  position: absolute;
+  position: relative;
   width: 68vw;
   height: 41vw;
   left: 18vw;
   top: 9vw;
   padding: 20px;
 }
+
+.removeAorB {
+  position: absolute;
+  background-color: cornflowerblue;
+  width: 30%;
+  max-height: 80%;
+  max-width: 300px;
+  padding: 20px;
+  left: 35%;
+  top: 30%;
+}
+
 
 #glass_overlay {
   position: absolute;
@@ -84,6 +96,8 @@ tr {
   right: -5px;
   bottom: -5px;
 }
+
+
 
 .hide {
   display: none;
