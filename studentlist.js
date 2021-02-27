@@ -52,19 +52,10 @@ function start() {
   loadJSON();
 }
 
-// Old fetch function:
-
-// function loadJSON() {
-//   fetch("https://petlatkea.dk/2021/hogwarts/students.json")
-//     .then((response) => response.json())
-//     .then((dirtyData) => {
-//       // when loaded, prepare objects
-//       prepareObjects(dirtyData);
-//     });
-// }
+// Get da data!
 
 async function loadJSON() {
-  // Trying this async stuff. Still not sure exactly how it works
+  // Trying this async stuff. Still not sure how the details work
   const response = await fetch(
     "https://petlatkea.dk/2021/hogwarts/students.json"
   );
@@ -182,14 +173,14 @@ function capitalize(string) {
 }
 
 // FILTERING
-
+// Pass event data to setFilter()
 function filterClicked(event) {
   console.log("A filter was clicked!");
   const filButt = event.target.dataset.filter; // Get data attr from event elem
   const filType = event.target.dataset.key;
   setFilter(filButt, filType); // Pass data attr (the button clicked) to this func
 }
-
+// Update currentFilter & currentFilterKey in setings obj
 function setFilter(filButt, filType) {
   console.log(filType, filButt);
   settings.currentFilter = filButt; // Set current filter
@@ -197,7 +188,7 @@ function setFilter(filButt, filType) {
   //console.log(settings);
   buildList();
 }
-
+// Filter data based on current filter and key values in settings obj
 function filterList(studentList) {
   const filter = settings.currentFilter;
   const filterKey = settings.currentFilterKey;
@@ -217,6 +208,7 @@ function filterList(studentList) {
 
 // SORTING
 
+// Pass event data to setSort()
 function sortingClicked(event) {
   console.log("A sorting was clicked!");
   const sortButt = event.target.dataset.sort; // Get data attr from event elem
@@ -225,7 +217,7 @@ function sortingClicked(event) {
 
   setSort(sortButt, dir, sortElemClicked); // Pass data attr (the button clicked) to sortingSet func
 }
-
+// Update currentSort & sortDir in settings obj - Set data-direction attr to opposite (asc/desc)
 function setSort(sortButt, dir, sortElemClicked) {
   console.log(sortButt, dir, sortElemClicked);
   settings.currentSort = sortButt;
@@ -238,7 +230,7 @@ function setSort(sortButt, dir, sortElemClicked) {
 
   buildList();
 }
-
+// Sort based on currentSort and sortDir in settings obj
 function sortList(filteredList) {
   const sortType = settings.currentSort;
   const dir = settings.sortDir; // Get sort direction from settings object
@@ -255,12 +247,12 @@ function sortList(filteredList) {
   return sortApplied;
 }
 
-// SEARCH FUNCTION (a cool and simple one I'd say!)
+// SEARCH FUNCTION
 
 function searchList(event) {
   const input = event.target.value;
   const searchList = currentList.filter((student) => {
-    if (
+    if ( // Look through every key value of every student obj for input match
       student.firstName.toLowerCase().includes(input.toLowerCase()) ||
       student.lastName.toLowerCase().includes(input.toLowerCase()) ||
       student.middleName.toLowerCase().includes(input.toLowerCase()) ||
@@ -277,6 +269,7 @@ function searchList(event) {
 
 // DISPLAYING THINGS
 
+// Get updated filter and sort data before displaying list
 function buildList() {
   const filteredList = filterList(studentList);
   const sortedList = sortList(filteredList);
@@ -284,13 +277,13 @@ function buildList() {
 
   displayList(sortedList); // Send result to displayList()
 }
-
+// Display list of students based on filter/sort criteria
 function displayList(allStudents) {
   qs("#list tbody").innerHTML = "";
 
   allStudents.forEach(displayStudent);
 }
-
+// Get data for one student to diplay in displauList(allStudents) above
 function displayStudent(oneStudent) {
   // Clone the student template, populate it with a studen object and append to the list
   const clone = qs("#student").content.cloneNode(true);
@@ -322,7 +315,7 @@ function displayStudent(oneStudent) {
 
   qs("#list tbody").appendChild(clone); // append clone to list
 }
-
+// Display single student in modal
 function showDetails(student) {
   console.log(student);
 
@@ -381,9 +374,7 @@ function showDetails(student) {
 
   const bloodSymbol = getBloodSymbol(student.blood); // Get blood type symbol
   const bloodType = document.createElement("h4"); // Display blood type
-  bloodType.innerHTML = `Blood type: ${capitalize(
-    student.blood
-  ).bold()} ${bloodSymbol}`;
+  bloodType.innerHTML = `Blood type: ${capitalize(student.blood).bold()} ${bloodSymbol}`;
   myModal.querySelector(".modal_data").appendChild(bloodType);
 
   // Add click event to button -> editStudent() (edit prefect, team (standard or captain), inquisitor, EXPELL)
@@ -397,13 +388,18 @@ function showDetails(student) {
 
 // Sub functions related to the modal :
 
+// Get blood type symbol to display 
 function getBloodSymbol(bloodType) {
   // Get unicode symbol to go with blood str!
   if (bloodType === "half") {
-    return "\u25D2";
-  } else if (bloodType === "full") {
-    return "\u2B24";
+    return "h";
+  } else if (bloodType === "pure") {
+    return "p";
+  } else if (bloodType === "half/pure") {
+    return "h/p"
+  } else if (bloodType === "unknown") {
+    return "?"
   } else {
-    return "\u25EF";
+    return "m";
   }
 }
