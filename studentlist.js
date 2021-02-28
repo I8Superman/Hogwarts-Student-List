@@ -222,7 +222,6 @@ function sortingClicked(event) {
 }
 // Update currentSort & sortDir in settings obj - Set data-direction attr to opposite (asc/desc)
 function setSort(sortButt, dir, sortElemClicked) {
-  console.log(sortButt, dir, sortElemClicked);
   settings.currentSort = sortButt;
   settings.sortDir = dir; // Set sort direction in settings object
   // Set data-direction attr to the opposite of what it is now:
@@ -323,31 +322,33 @@ function displayStudent(oneStudent) {
 function showDetails(student) {
   const template = qs("template.modal").content;
   const myModal = template.cloneNode(true);
-
-  const modalBox = myModal.querySelector(".modal_box");
-  const content = myModal.querySelector(".modal_content");
   const shield = myModal.querySelector(".house_shield");
-  const editButton = myModal.querySelector(".edit_info");
   const image = myModal.querySelector(".modal_header img");
-  const dataArea = myModal.querySelector(".modal_data");
-
+  let imgUrl = '';
   // Get image URL -> createImgUrl
   if (student.lastName && student.firstName) {
     // Both names mus be available to create img URL
     let tempLastName = student.lastName;
+
     if (student.lastName.includes("-")) {
       // Get name part after hyphen in lastName
       tempLastName = student.lastName.slice(student.lastName.indexOf("-") + 1);
-    } // Create the img URL string:
-    const imgUrl = `./student_img/${tempLastName.toLowerCase()}_${student.firstName
-      .substring(0, 1)
-      .toLowerCase()}.png`;
-    image.setAttribute("src", imgUrl);
-  } else {
-    // If one of the names are not available, default to this URL
-    image.setAttribute("src", "./student_img/no_img.png");
+    } 
+    // Create the img URL string:
+
+    if (tempLastName.toLowerCase() === 'patil') {
+      console.log('we got a patil!');
+      imgUrl = `./student_img/${tempLastName.toLowerCase()}_${student.firstName.toLowerCase()}.png`;
+      console.log(imgUrl);
+    } else if (student.lastName.toLowerCase !== 'patil') {
+      imgUrl = `./student_img/${tempLastName.toLowerCase()}_${student.firstName.substring(0, 1).toLowerCase()}.png`;
+    } else {
+      imgUrl = './student_img/no_img.png';
+    }
   }
 
+  image.setAttribute("src", imgUrl);
+  
   // Get shield image
   // Get names, gender etc.
   // Populate template with img, data and shield
