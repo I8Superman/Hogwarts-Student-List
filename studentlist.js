@@ -7,6 +7,7 @@ const qsA = (s) => document.querySelectorAll(s);
 
 let studentList = [];
 let currentList = [];
+let expelledList = [];
 
 let bloodTypeData;
 
@@ -210,7 +211,6 @@ function filterList(studentList) {
 }
 
 // SORTING
-
 // Pass event data to setSort()
 function sortingClicked(event) {
   console.log("A sorting was clicked!");
@@ -318,6 +318,7 @@ function displayStudent(oneStudent) {
 
   qs("#list tbody").appendChild(clone); // append clone to list
 }
+
 // Display single student in modal
 function showDetails(student) {
   const template = qs("template.modal").content;
@@ -382,6 +383,9 @@ function showDetails(student) {
 
   // Add click event to button -> editStudent() (edit prefect, team (standard or captain), inquisitor, EXPELL)  
   myModal.querySelector('.edit_student').addEventListener("click", () => openEditDialogue(student));
+  if (student.expelled === true) {
+    myModal.querySelector('.edit_student').remove();
+  }
   // Click outside modal_content to remove modal from DOM
   myModal.querySelector(".go_back").addEventListener("click", () => {
     console.log('Modal was removed!')
@@ -434,8 +438,6 @@ function openEditDialogue(student) {
   } // Change prefect status click event
   dialogue.querySelector('.prefect_toggle').addEventListener('click', () => changePrefectStatus(student));
 
-
-
   // INQUISITOR STATUS
   // Set button txt depending on inquisitor status
   if (student.inquisitor === false) {
@@ -446,6 +448,10 @@ function openEditDialogue(student) {
   dialogue.querySelector('.inquisitor_toggle').addEventListener('click', () => changeInquisitorStatus(student));
   // Close dialogue again
   dialogue.querySelector('.go_back').addEventListener('click', () => closeDialogue(student));
+
+  // EXPEL STATUS - make expel button clickable
+  dialogue.querySelector('.expel').addEventListener('click', () => clickExpelStudent(student));
+
   qs('#screen').appendChild(dialogue);
 }
 
@@ -453,7 +459,7 @@ function closeDialogue(student) {
   qs('.edit_dialogue').remove();
   qs('.modal_box').remove();
   buildList();
-  showDetails(student);
+  showDetails(student); // Only clones the modal
 }
 
 // INQUISITOR SUB FUNCTIONS
@@ -488,7 +494,7 @@ function tryToMakeInquisitor(selectedStudent) {
   function closePopup() {
       popup.classList.add("hide");
       qs(".no_inquisitor .cancel").removeEventListener("click", closePopup);
-    }
+  }
 
   function makeInquisitor() {
     selectedStudent.inquisitor = true;
@@ -594,6 +600,57 @@ function tryToMakePrefect(selectedStudent) {
   // Generic remove prefect function
   function removePrefect(student) {
     student.prefect = false;
+  }
+}
+
+// EXPELLING SUB FUNCTIONS
+
+function clickExpelStudent(student) {
+  areYouSureExpel(student);
+}
+
+function areYouSureExpel(student) {
+  const popup = qs('.reallyExpel');
+  popup.classList.remove("hide");
+  if (student.gender === 'boy') {
+    qs('.expelSex').textContent = ` He `;
+  } else {
+    qs('.expelSex').textContent = ` She `;
+  }
+  
+  qs('.no').addEventListener("click", closePopup);
+  qs('.yes').addEventListener("click", expelStudent);
+
+  function closePopup() {
+        popup.classList.add("hide");
+        qs('.no').removeEventListener("click", closePopup);
+        qs('.yes').removeEventListener("click", expelStudent);
+    }
+
+  function expelStudent() {
+    student.expelled = true;
+    moveToExpelList(); // Move to expelledList
+    stripOfPrivileges()
+    closePopup();
+    qs('.edit_dialogue').remove(); // Removes dialogue and modal completely
+    qs('.modal_box').remove(); 
+    buildList(); // Updates the current list with any changes
+    showDetails(student); // Clones modal again - opening the dialogue will no longer be possible
+  }
+
+  function stripOfPrivileges() {
+    student.prefect = false;
+    student.inquisitor = false;
+  }
+
+  // Move student from studentList to expelledList
+  function moveToExpelList() {
+    // Get position of expelled student in studentList
+    const position = studentList.findIndex(elem => elem.expelled === true);
+    // Extract student from the list
+    const grabStudent = studentList.splice(position, 1);
+    // Move student to expelled list
+    expelledList.push(grabStudent[0]); // Because splice returns (grabStudent) an array
   }
 }
 
