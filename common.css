@@ -33,6 +33,18 @@ main {
   padding: 20px;
 }
 
+.edit_dialogue {
+  position: absolute;
+  background-color: lightsalmon;
+  width: 25%;
+  max-height: 80%;
+  max-width: 300px;
+  padding: 20px;
+  left: 59%;
+  top: 10%;
+  z-index: 1;
+}
+
 .popup_removeAorB {
   position: absolute;
   background-color: cornflowerblue;
@@ -84,8 +96,8 @@ tr {
 
 .modal_content {
   position: relative;
-  width: 50%;
-  min-width: 300px;
+  width: 40%;
+  min-width: 200px;
   max-height: 95%;
   max-width: 400px;
   padding: 20px;

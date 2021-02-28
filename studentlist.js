@@ -312,13 +312,13 @@ function displayStudent(oneStudent) {
   // } // Display blood sybol in list:
   clone.querySelector("[data-field=blood]").textContent = bloodSymbol;
 
-  // clone // Add event to call shwDetails
-  //   .querySelector("tr")
-  //   .addEventListener("click", (e) => showDetails(oneStudent));
-
-  clone // Temporary prefect clickability!!
+  clone // Add event to call shwDetails
     .querySelector("tr")
-    .addEventListener("click", (e) => makePrefect(oneStudent));
+    .addEventListener("click", (e) => showDetails(oneStudent));
+
+  // clone // Toggle prefect status
+  //   .querySelector("tr")
+  //   .addEventListener("click", (e) => makePrefect(oneStudent));
 
   qs("#list tbody").appendChild(clone); // append clone to list
 }
