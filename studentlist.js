@@ -417,6 +417,7 @@ function openEditDialogue(student) {
   const dialogue = template.cloneNode(true);
 
   console.log('Prefect status is now ' + student.prefect)
+  console.log('Inquisitor status is now ' + student.inquisitor)
   // Temporarely remove click events from modal so it doesn't close while editing student):
   qs('.modal_buttons').style.pointerEvents = 'none';
   dialogue.querySelector('.edit_dialogue').classList.remove('hide'); // Un-hide the dialogue box
@@ -458,12 +459,40 @@ function closeDialogue(student) {
 // INQUISITOR SUB FUNCTIONS
 
 function changeInquisitorStatus(student) {
-  console.log('Inq here!')
-  if (student.prefect === true) {
-    student.prefect = false;
-    removeAndReset(student);
+  if (student.inquisitor === true) {
+    student.inquisitor = false;
+    resetAndRebuild(student);
   } else {
-    tryToMakePrefect(student);
+    tryToMakeInquisitor(student);
+  }
+}
+
+// Check if student can be made inquisitor
+function tryToMakeInquisitor(selectedStudent) {
+
+  const house = selectedStudent.house;
+  const bloodType = selectedStudent.blood;
+  const popup = qs(".no_inquisitor");
+
+  if (house.toLowerCase() === 'slytherine' || bloodType === 'pure') {
+    makeInquisitor();
+  } else {
+    appointNotPossible();
+  }
+
+  function appointNotPossible() {
+    popup.classList.remove("hide");
+    qs(".no_inquisitor .cancel").addEventListener("click", closePopup);
+  }
+
+  function closePopup() {
+      popup.classList.add("hide");
+      qs(".no_inquisitor .cancel").removeEventListener("click", closePopup);
+    }
+
+  function makeInquisitor() {
+    selectedStudent.inquisitor = true;
+    resetAndRebuild(selectedStudent);
   }
 }
 
@@ -472,7 +501,7 @@ function changeInquisitorStatus(student) {
 function changePrefectStatus(student) {
   if (student.prefect === true) {
     student.prefect = false;
-    removeAndReset(student);
+    resetAndRebuild(student);
   } else {
     tryToMakePrefect(student);
   }
@@ -503,17 +532,17 @@ function tryToMakePrefect(selectedStudent) {
 
   // Show popup with remove and cancel button
   function removeOtherStudent(student) {
-    const popup = qs(".popup_removeOther");
+    const popup = qs(".removeOther");
     popup.classList.remove("hide");
-    qs(".popup_removeOther .alert").textContent += ` ${student.gender} from each house`;
-    qs(".popup_removeOther .cancel").addEventListener("click", closePopup);
+    qs(".removeOther .alert").textContent = `You can only appoint one ${student.gender} from each house!`;
+    qs(".removeOther .cancel").addEventListener("click", closePopup);
     qs(".remove_other").addEventListener("click", clickRemoveOther);
     // Show names on button
     qs(".remove_other").textContent = `Remove ${student.firstName} ${student.lastName}`;
     // Close popup if cancel button clicked
     function closePopup() {
       popup.classList.add("hide");
-      qs(".popup_removeOther .cancel").removeEventListener("click", closePopup);
+      qs(".removeOther .cancel").removeEventListener("click", closePopup);
       qs(".remove_a").removeEventListener("click", clickRemoveOther);
     }
 
@@ -521,15 +550,15 @@ function tryToMakePrefect(selectedStudent) {
       removePrefect(student);
       makePrefect(selectedStudent);
       closePopup();
-      removeAndReset(selectedStudent);
+      resetAndRebuild(selectedStudent);
     }
   }
 
   // Show popup with remove A or B and cancel buttons
   function removeAorB(studA, studB) {
-    const popup = qs(".popup_removeAorB");
+    const popup = qs(".removeAorB");
     popup.classList.remove("hide");
-    qs(".popup_removeAorB .cancel").addEventListener("click", closePopup);
+    qs(".removeAorB .cancel").addEventListener("click", closePopup);
     qs(".remove_a").addEventListener("click", clickRemoveA);
     qs(".remove_b").addEventListener("click", clickRemoveB);
     // Show names on buttons
@@ -538,7 +567,7 @@ function tryToMakePrefect(selectedStudent) {
     // Close popup if cancel button clicked
     function closePopup() {
       popup.classList.add("hide");
-      qs(".popup_removeAorB .cancel").removeEventListener("click", closePopup);
+      qs(".removeAorB .cancel").removeEventListener("click", closePopup);
       qs(".remove_a").removeEventListener("click", clickRemoveA);
       qs(".remove_b").removeEventListener("click", clickRemoveB);
     }
@@ -547,20 +576,20 @@ function tryToMakePrefect(selectedStudent) {
       removePrefect(studA);
       makePrefect(selectedStudent);
       closePopup();
-      removeAndReset(selectedStudent);
+      resetAndRebuild(selectedStudent);
     }
 
     function clickRemoveB() {
       removePrefect(studB);
       makePrefect(selectedStudent);
       closePopup();
-      removeAndReset(selectedStudent);
+      resetAndRebuild(selectedStudent);
     }
   }
   // Generic make prefect function
   function makePrefect(student) {
     student.prefect = true;
-    removeAndReset(selectedStudent);
+    resetAndRebuild(selectedStudent);
   }
   // Generic remove prefect function
   function removePrefect(student) {
@@ -569,7 +598,7 @@ function tryToMakePrefect(selectedStudent) {
 }
 
 // Call this after clicking button in dialogue box to update everything
-function removeAndReset(student) {
+function resetAndRebuild(student) {
   console.log('Resetting...')
   qs('.edit_dialogue').remove(); // Removes dialogue and modal completely
   qs('.modal_box').remove(); 
