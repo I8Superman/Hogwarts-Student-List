@@ -49,6 +49,14 @@ function start() {
   });
   // Add listener to search input field - triggers searchList functon below
   qs("#search_field").addEventListener("input", searchList);
+  // Add trigger for hack function
+  document.body.addEventListener('keyup', function(e) {
+    if (e.key == "Escape") {
+      hackTheSystem();
+      console.log('The system has been compromised!');
+    }
+  });
+
 
   loadJSON();
 }
