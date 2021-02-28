@@ -442,10 +442,30 @@ function openEditDialogue(student) {
   } else {
     dialogue.querySelector('.inquisitor_toggle').textContent = 'Remove from inquisitorial squad';
   }
-
+  dialogue.querySelector('.inquisitor_toggle').addEventListener('click', () => changeInquisitorStatus(student));
+  // Close dialogue again
+  dialogue.querySelector('.go_back').addEventListener('click', () => closeDialogue(student));
   qs('#screen').appendChild(dialogue);
 }
 
+function closeDialogue(student) {
+  qs('.edit_dialogue').remove();
+  qs('.modal_box').remove();
+  buildList();
+  showDetails(student);
+}
+
+// INQUISITOR SUB FUNCTIONS
+
+function changeInquisitorStatus(student) {
+  console.log('Inq here!')
+  if (student.prefect === true) {
+    student.prefect = false;
+    removeAndReset(student);
+  } else {
+    tryToMakePrefect(student);
+  }
+}
 
 // PREFECT SUB FUNCTIONS
 
@@ -551,9 +571,9 @@ function tryToMakePrefect(selectedStudent) {
 // Call this after clicking button in dialogue box to update everything
 function removeAndReset(student) {
   console.log('Resetting...')
-  qs('.edit_dialogue').remove();
-  qs('.modal_box').remove();
-  buildList();
-  showDetails(student);
-  openEditDialogue(student);
+  qs('.edit_dialogue').remove(); // Removes dialogue and modal completely
+  qs('.modal_box').remove(); 
+  buildList(); // Updates the current list with any changes
+  showDetails(student); // Clones modal again
+  openEditDialogue(student); // Clones dialogue again
 }
