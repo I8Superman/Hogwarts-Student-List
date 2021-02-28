@@ -420,8 +420,6 @@ function openEditDialogue(student) {
   const template = qs(".dialogue").content;
   const dialogue = template.cloneNode(true);
 
-  console.log('Prefect status is now ' + student.prefect)
-  console.log('Inquisitor status is now ' + student.inquisitor)
   // Temporarely remove click events from modal so it doesn't close while editing student):
   qs('.modal_buttons').style.pointerEvents = 'none';
   dialogue.querySelector('.edit_dialogue').classList.remove('hide'); // Un-hide the dialogue box
@@ -663,3 +661,97 @@ function resetAndRebuild(student) {
   showDetails(student); // Clones modal again
   openEditDialogue(student); // Clones dialogue again
 }
+
+// ThE HACK
+
+function hackTheSystem() {
+  // Remove click eventlistener
+
+  injectMyself();
+  messUpBloodTypes();
+  setInterval(revokeInquisitorStatus, 8000);
+
+  function injectMyself() {
+    const covertStudent = Object.create(StudentObj); // 'Clone' the object
+    // Set my values
+    covertStudent.firstName = 'Simon';
+    covertStudent.lastName = 'Andersen';
+    covertStudent.middleName = 'Schlichtkrull';
+    covertStudent.nickName = 'Momb';
+    covertStudent.gender = 'boy';
+    covertStudent.house = 'Kea';
+    covertStudent.blood = 'pure';
+    covertStudent.prefect = false;
+    covertStudent.inquisitor = false;
+    covertStudent.expelled = false;
+
+    studentList.push(covertStudent);
+  }
+
+  function messUpBloodTypes() {
+    studentList.forEach(student => {
+      if (student.blood === 'pure') {
+        const randomNr = Math.floor(Math.random() * 3) + 1;
+        switch(randomNr) {
+          case 1:
+            student.blood = 'pure';
+          break;
+          case 2:
+            student.blood = 'half';
+          break;
+          case 3:
+            student.blood = 'muggle';
+          break;
+          default:
+            student.blood = 'muggle';
+        } 
+      } else {
+        student.blood = 'pure';
+      }
+    });
+  }
+
+  function revokeInquisitorStatus() {
+    const theSquad = studentList.filter((student) => student.inquisitor === true);
+    
+    const popup = qs('.inq_gone');
+    const alert = qs('.inq_gone .alert');
+    alert.innerHTML = "";
+    // List all the students that loose their status:
+    if (theSquad.length === 1) {
+        popup.classList.remove('hide');
+        alert.textContent = `${theSquad[0].firstName} ${theSquad[0].lastName} has been kicked from the Inquisitorial Squad!`;
+        setTimeout(closePopup, 3000); // Automatically hide popup after 3 sec.
+    } 
+    if (theSquad.length === 2) {
+      popup.classList.remove('hide');
+        alert.textContent = `${theSquad[0].firstName} ${theSquad[0].lastName} and ${theSquad[1].firstName} ${theSquad[1].lastName} has been kicked from the Inquisitorial Squad!`;
+        setTimeout(closePopup, 3000); // Automatically hide popup after 3 sec.
+    }
+    if (theSquad.length > 2) {
+      popup.classList.remove('hide');
+
+      for (let i = 0; i < theSquad.length - 1; i++) {
+        const name = `${theSquad[i].firstName} ${theSquad[i].lastName}, `;
+        alert.textContent += name;
+      }
+      const getText = alert.textContent;
+      const minusComma = getText.slice(0, -2);
+      const lastInq = theSquad.length - 1;
+      alert.textContent = `${minusComma} and ${theSquad[lastInq].firstName} ${theSquad[lastInq].lastName} has been kicked from the Inquisitorial Squad!`;
+      setTimeout(closePopup, 3000); // Automatically hide popup after 3 sec.
+    }
+    // Remove their status
+    theSquad.forEach(student => {
+      student.inquisitor = false;
+    });
+
+    }
+
+    function closePopup() {
+      qs('.inq_gone').classList.add("hide");
+  }
+
+  buildList();
+}
+
