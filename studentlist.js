@@ -31,7 +31,7 @@ const StudentObj = {
   blood: "muggle",
   prefect: false,
   quidditch: "", // 'player' or 'captain' here, if on the team
-  inquisition: false,
+  inquisitor: false,
   expelled: false,
 };
 
@@ -316,16 +316,10 @@ function displayStudent(oneStudent) {
     .querySelector("tr")
     .addEventListener("click", (e) => showDetails(oneStudent));
 
-  // clone // Toggle prefect status
-  //   .querySelector("tr")
-  //   .addEventListener("click", (e) => makePrefect(oneStudent));
-
   qs("#list tbody").appendChild(clone); // append clone to list
 }
 // Display single student in modal
 function showDetails(student) {
-  console.log(student);
-
   const template = qs("template.modal").content;
   const myModal = template.cloneNode(true);
 
@@ -386,10 +380,12 @@ function showDetails(student) {
   ).bold()} ${bloodSymbol}`;
   myModal.querySelector(".modal_data").appendChild(bloodType);
 
-  // Add click event to button -> editStudent() (edit prefect, team (standard or captain), inquisitor, EXPELL)
-
-  myModal.querySelector(".modal_box").addEventListener("click", () => {
-    document.querySelector(".modal_box").remove(); // Click outside modal_content to remove modal from DOM
+  // Add click event to button -> editStudent() (edit prefect, team (standard or captain), inquisitor, EXPELL)  
+  myModal.querySelector('.edit_student').addEventListener("click", () => openEditDialogue(student));
+  // Click outside modal_content to remove modal from DOM
+  myModal.querySelector(".go_back").addEventListener("click", () => {
+    console.log('Modal was removed!')
+    document.querySelector(".modal_box").remove(); 
   });
 
   qs("#screen").appendChild(myModal);
@@ -413,14 +409,55 @@ function getBloodSymbol(bloodType) {
   }
 }
 
-function makePrefect(student) {
+// EDIT DIALOGUE
+
+function openEditDialogue(student) {
+
+  const template = qs(".dialogue").content;
+  const dialogue = template.cloneNode(true);
+
+  console.log('Prefect status is now ' + student.prefect)
+  // Temporarely remove click events from modal so it doesn't close while editing student):
+  qs('.modal_buttons').style.pointerEvents = 'none';
+  dialogue.querySelector('.edit_dialogue').classList.remove('hide'); // Un-hide the dialogue box
+
+  // Summary txt here
+  // 'Name is a prefect and member of the inquisitorial squas'
+
+  // PREFECT STATUS
+  // Set button txt depending on prefect status
+  if (student.prefect === false) {
+    dialogue.querySelector('.prefect_toggle').textContent = 'Appoint Prefect';
+  } else {
+    dialogue.querySelector('.prefect_toggle').textContent = 'Strip of Prefect title';
+  } // Change prefect status click event
+  dialogue.querySelector('.prefect_toggle').addEventListener('click', () => changePrefectStatus(student));
+
+
+
+  // INQUISITOR STATUS
+  // Set button txt depending on inquisitor status
+  if (student.inquisitor === false) {
+    dialogue.querySelector('.inquisitor_toggle').textContent = 'Appoint Inquisitor';
+  } else {
+    dialogue.querySelector('.inquisitor_toggle').textContent = 'Remove from inquisitorial squad';
+  }
+
+  qs('#screen').appendChild(dialogue);
+}
+
+
+// PREFECT SUB FUNCTIONS
+
+function changePrefectStatus(student) {
   if (student.prefect === true) {
     student.prefect = false;
+    removeAndReset(student);
   } else {
     tryToMakePrefect(student);
   }
 }
-
+// Check if student can be made prefect
 function tryToMakePrefect(selectedStudent) {
   // Get all prefects in Hogwarts
   const allPrefects = studentList.filter((student) => student.prefect === true);
@@ -463,8 +500,8 @@ function tryToMakePrefect(selectedStudent) {
     function clickRemoveOther() {
       removePrefect(student);
       makePrefect(selectedStudent);
-      buildList();
       closePopup();
+      removeAndReset(selectedStudent);
     }
   }
 
@@ -489,25 +526,34 @@ function tryToMakePrefect(selectedStudent) {
     function clickRemoveA() {
       removePrefect(studA);
       makePrefect(selectedStudent);
-      buildList();
       closePopup();
+      removeAndReset(selectedStudent);
     }
 
     function clickRemoveB() {
       removePrefect(studB);
       makePrefect(selectedStudent);
-      buildList();
       closePopup();
+      removeAndReset(selectedStudent);
     }
   }
   // Generic make prefect function
   function makePrefect(student) {
     student.prefect = true;
+    removeAndReset(selectedStudent);
   }
   // Generic remove prefect function
   function removePrefect(student) {
     student.prefect = false;
   }
+}
 
+// Call this after clicking button in dialogue box to update everything
+function removeAndReset(student) {
+  console.log('Resetting...')
+  qs('.edit_dialogue').remove();
+  qs('.modal_box').remove();
   buildList();
+  showDetails(student);
+  openEditDialogue(student);
 }

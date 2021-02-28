@@ -16,7 +16,10 @@
           <div class="modal_box">
             <div class="modal_content">
               <div class="house_shield">Shield here</div>
-              <button class="edit_info">Edit student</button>
+                <div class="modal_buttons">
+                  <button class="go_back">Go back</button>
+                  <button class="edit_student">Edit student</button>
+                </div>
               <div class="modal_header">
                 <img src="./student_img/abbott_h.png" alt="" />
                 <div class="emblems">Emblems here</div>
@@ -28,13 +31,16 @@
           </div>
         </template>
 
-        <div class="edit_dialogue">
-          <div class="alert">Student name is a prefect and member og the inquisitorial squad</div>
-          <button class="remove_a">Remove/appoint prefect</button>
-          <button class="remove_b">Remove/appoint inquisitor</button>
-          <button class="cancel">Go back</button>
-        </div>
-
+        <template class="dialogue">
+          <div class="edit_dialogue">
+            <div class="alert">Student name is a prefect and member og the inquisitorial squad</div>
+            <button class="prefect_toggle">Remove/appoint prefect</button>
+            <button class="inquisitor_toggle">Remove/appoint inquisitor</button>
+            <button class="expel">Expel student</button>
+            <button class="go_back">Go back</button>
+          </div>
+          </template>
+          
         <div class="popup_removeAorB hide">
           <div class="alert">You can only appoint 2 prefects from each house!</div>
           <button class="remove_a">Remove</button>
