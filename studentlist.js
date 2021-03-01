@@ -304,7 +304,6 @@ function displayStudent(oneStudent) {
   clone.querySelector("[data-field=house]").textContent = oneStudent.house;
   
   const bloodType = oneStudent.blood;
-  console.log(bloodType)
   clone.querySelector("[data-field=blood] img").setAttribute('src', `./ressources/${bloodType}.png`);
   // Set symbols depending on titles
   if (oneStudent.prefect === true) {
