@@ -69,7 +69,12 @@
           <div class="alert"></div>
         </div>
 
-        <h1>Hogwarts student data</h1>
+       <div id="menu"> 
+        <input
+          id="search_field"
+          type="search"
+          placeholder="Search..."
+        />
         <div id="filters">
           <button
             class="filter"
@@ -123,78 +128,56 @@
           <button
             class="filter"
             data-action="filter"
-            data-key="quidditch"
-            data-filter="quidditch"
-            >Quidditch</button
+            data-key="inquisitor"
+            data-filter="inquisitor"
+            >Inquisitors</button
           >
           <button
             class="filter"
             data-action="filter"
             data-key="blood"
             data-filter="blood"
-            >Blood type</button
+            >Blood Type</button
           >
           <button class="filter" data-action="filter" data-filter="all"
             >Show all</button
           >
         </div>
-        <input
-          id="search_field"
-          type="search"
-          placeholder="Search by name..."
-        />
+        
+       </div> 
+       <div id="right_side">
+         <div id="header">
+              <div class="cat">Name</div>
+              <div class="cat">Gender</div>
+              <div class="cat">House</div>
+              <div class="cat">Blood</div>
+              <div class="cat">Titles</div>
+            </div>
+       <div id="list_container">
+         
         <table id="list">
           <thead>
             <tr>
-              <th data-action="sort" data-direction="desc" data-sort="firstName"
-                >Firstname</th
-              >
-              <th
-                data-action="sort"
-                data-direction="desc"
-                data-sort="middleName"
-                >Middlename</th
-              >
-              <th data-action="sort" data-direction="desc" data-sort="lastName"
-                >Lastname</th
-              >
-              <th data-action="sort" data-direction="desc" data-sort="nickName"
-                >Nickname</th
-              >
-              <th data-action="sort" data-direction="desc" data-sort="gender"
-                >Gender</th
-              >
-              <th data-action="sort" data-direction="desc" data-sort="house"
-                >House</th
-              >
-              <th data-action="sort" data-direction="desc" data-sort="prefect"
-                >Prefect</th
-              >
-              <th data-action="sort" data-direction="desc" data-sort="blood"
-                >Blood type</th
-              >
-              <th data-action="sort" data-direction="desc" data-sort="quidditch"
-                >Quidditch</th
-              >
+            
             </tr>
           </thead>
           <tbody>
             <!-- student template clones inserted here -->
           </tbody> 
         </table>
+        </div>
+      </div>
       </div>
     </main>
 
     <template id="student">
       <tr>
         <td data-field="firstName">first</td>
-        <td data-field="middleName">middle</td>
         <td data-field="lastName">last</td>
-        <td data-field="nickName">nick</td>
         <td data-field="gender">gender</td>
         <td data-field="house">house</td>
-        <td data-field="prefect">no</td>
-        <td data-field="blood">no</td>
+        <td data-field="blood"><img class="blood_img" src="" alt=""></td>
+        <td data-field="titles"></td>
       </tr>
     </template>
 

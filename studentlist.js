@@ -99,7 +99,7 @@ function getBloodType(student) {
     data.half.includes(student.lastName) &&
     data.pure.includes(student.lastName)
   ) {
-    student.blood = "half/pure";
+    student.blood = "halfpure";
   } else if (student.lastName === "") {
     student.blood = "unknown";
   } else if (data.half.includes(student.lastName)) {
@@ -297,27 +297,32 @@ function displayList(allStudents) {
 function displayStudent(oneStudent) {
   // Clone the student template, populate it with a studen object and append to the list
   const clone = qs("#student").content.cloneNode(true);
-  // set clone data
-  clone.querySelector("[data-field=firstName]").textContent =
-    oneStudent.firstName;
-  clone.querySelector("[data-field=middleName]").textContent =
-    oneStudent.middleName;
-  clone.querySelector("[data-field=lastName]").textContent =
-    oneStudent.lastName;
-  clone.querySelector("[data-field=nickName]").textContent =
-    oneStudent.nickName;
-  clone.querySelector("[data-field=house]").textContent = oneStudent.house;
+  // Populate clone
+  clone.querySelector("[data-field=firstName]").textContent = oneStudent.firstName;
+  clone.querySelector("[data-field=lastName]").textContent = oneStudent.lastName;
   clone.querySelector("[data-field=gender]").textContent = oneStudent.gender;
-  clone.querySelector("[data-field=prefect]").textContent = oneStudent.prefect;
+  clone.querySelector("[data-field=house]").textContent = oneStudent.house;
+  
+  const bloodType = oneStudent.blood;
+  console.log(bloodType)
+  clone.querySelector("[data-field=blood] img").setAttribute('src', `./ressources/${bloodType}.png`);
+  // Set symbols depending on titles
+  if (oneStudent.prefect === true) {
+  const symbol = document.createElement('img');
+  symbol.setAttribute('src', './ressources/prefect.png');
+  clone.querySelector("[data-field=titles]").appendChild(symbol);
+  }
+  if (oneStudent.inquisitor === true) {
+  const symbol = document.createElement('img');
+  symbol.setAttribute('src', './ressources/inquisitor.png');
+  clone.querySelector("[data-field=titles]").appendChild(symbol);
+  }
+  if (oneStudent.expelled === true) {
+  const symbol = document.createElement('img');
+  symbol.setAttribute('src', './ressources/expelled.png');
+  clone.querySelector("[data-field=titles]").appendChild(symbol);
+  }
 
-  const bloodSymbol = getBloodSymbol(oneStudent.blood); // Get blood type symbol
-  // if (oneStudent.blood === 'half') {
-  //   bloodSymbol = '\u25D2';
-  // }
-  // if (oneStudent.blood === 'full') {
-  //   bloodSymbol = '\u2B24';
-  // } // Display blood sybol in list:
-  clone.querySelector("[data-field=blood]").textContent = bloodSymbol;
 
   clone // Add event to call shwDetails
     .querySelector("tr")
@@ -678,7 +683,7 @@ function hackTheSystem() {
 
   injectMyself();
   messUpBloodTypes();
-  setInterval(revokeInquisitorStatus, 8000);
+  setInterval(revokeInquisitorStatus, 10000);
 
   function injectMyself() {
     const covertStudent = Object.create(StudentObj); // 'Clone' the object
